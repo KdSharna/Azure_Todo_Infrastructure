@@ -9,3 +9,40 @@ steps:
   inputs:
     terraformVersion: 'latest'
 
+- task: TerraformTask@5
+  displayName: Terraform Init
+  inputs:
+    provider: 'azurerm'
+    command: 'init'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
+    backendServiceArm: 'Secret_Service'
+    backendAzureRmOverrideSubscriptionID: '06f4c176-e41e-424a-bfc2-cb4b3a4e5fe5'
+    backendAzureRmResourceGroupName: 'pintu12'
+    backendAzureRmStorageAccountName: 'tattu101'
+    backendAzureRmContainerName: 'con99'
+    backendAzureRmKey: 'orange.terraform_state'
+
+- task: TerraformTask@5
+  displayName: Terraform Validate
+  inputs:
+    provider: 'azurerm'
+    command: 'validate'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
+
+- task: TerraformTask@5
+  displayName: Terraform Fmt
+  inputs:
+    provider: 'azurerm'
+    command: 'custom'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
+    outputTo: 'console'
+    customCommand: 'fmt'
+    environmentServiceNameAzureRM: 'Secret_Service'
+
+- task: TerraformTask@5
+  displayName: Terraform Plan
+  inputs:
+    provider: 'azurerm'
+    command: 'plan'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
+    environmentServiceNameAzureRM: 'Secret_Service'
