@@ -1,12 +1,9 @@
 
-trigger:
-- none
+trigger: none
 
-pool:
-  vmImage: My_pool
+pool: My_pool
 
 steps:
-
 - task: TerraformInstaller@1
   displayName: Terraform Install
   inputs:
