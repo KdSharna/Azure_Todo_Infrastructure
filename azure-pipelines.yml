@@ -1,7 +1,16 @@
 
-trigger: none
+trigger:
+  branches:
+    include:
+      - main
+      - features101
+
 
 pool: My_pool
+
+variables:
+  repo: 'environment/dev'
+  server: '06f4c176-e41e-424a-bfc2-cb4b3a4e5fe5'
 
 steps:
 - task: TerraformInstaller@1
@@ -14,9 +23,9 @@ steps:
   inputs:
     provider: 'azurerm'
     command: 'init'
-    workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
+    workingDirectory: '$(repo)'
     backendServiceArm: 'Secret_Service'
-    backendAzureRmOverrideSubscriptionID: '06f4c176-e41e-424a-bfc2-cb4b3a4e5fe5'
+    backendAzureRmOverrideSubscriptionID: 'server'
     backendAzureRmResourceGroupName: 'pintu12'
     backendAzureRmStorageAccountName: 'tattu101'
     backendAzureRmContainerName: 'con99'
@@ -27,14 +36,14 @@ steps:
   inputs:
     provider: 'azurerm'
     command: 'validate'
-    workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
+    workingDirectory: '$(repo)'
 
 - task: TerraformTask@5
   displayName: Terraform Fmt
   inputs:
     provider: 'azurerm'
     command: 'custom'
-    workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
+    workingDirectory: '$(repo)'
     outputTo: 'console'
     customCommand: 'fmt'
     environmentServiceNameAzureRM: 'Secret_Service'
@@ -44,5 +53,6 @@ steps:
   inputs:
     provider: 'azurerm'
     command: 'plan'
-    workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
+    workingDirectory: '$(repo)'
     environmentServiceNameAzureRM: 'Secret_Service'
+
