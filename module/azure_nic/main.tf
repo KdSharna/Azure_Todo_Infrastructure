@@ -1,0 +1,15 @@
+resource "azurerm_network_interface" "nic_name" {
+  for_each = var.nic_name
+
+  name                = each.value.name
+  resource_group_name = each.value.rg_name
+  location            = each.value.location
+
+  ip_configuration {
+    name                          = "internal"
+    public_ip_address_id          = data.azurerm_public_ip.pip[each.key].id
+    subnet_id                     = data.azurerm_subnet.subnet[each.key].id
+    private_ip_address_allocation = "Dynamic"
+  }
+}
+
