@@ -1,0 +1,14 @@
+
+trigger:
+- none
+
+pool:
+  vmImage: My_pool
+
+steps:
+
+- task: TerraformInstaller@1
+  displayName: Terraform Install
+  inputs:
+    terraformVersion: 'latest'
+
