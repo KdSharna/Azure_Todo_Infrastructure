@@ -56,3 +56,10 @@ steps:
     workingDirectory: '$(repo)'
     environmentServiceNameAzureRM: 'Secret_Service'
 
+- task: TerraformTask@5
+  displayName: Terraform Apply
+  inputs:
+    provider: 'azurerm'
+    command: 'apply'
+    workingDirectory: '$(repo)'
+    environmentServiceNameAzureRM: 'Secret_Service'
