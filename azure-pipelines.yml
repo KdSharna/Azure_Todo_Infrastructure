@@ -11,10 +11,10 @@ variables:
   server: '06f4c176-e41e-424a-bfc2-cb4b3a4e5fe5'
 
 stages:
-- stage:
+- stage: TerraformBuild1
+  displayName: Terraform Build
   jobs:
   - job: TerraformBuild
-    displayName: Terraform Build
     pool: My_pool
     steps:
     - task: TerraformInstaller@1
@@ -60,9 +60,11 @@ stages:
         workingDirectory: '$(repo)'
         environmentServiceNameAzureRM: 'Secret_Service'
 
-  - job: ManualValidate
-    displayName: Manual Validation Step
-    dependsOn: TerraformBuild
+- stage: TerraformManual1
+  displayName: Terraform Validate
+  dependsOn:  TerraformBuild1
+  jobs:
+  - job: TerraformBuild
     pool: server
     steps:
     - task: ManualValidation@1
@@ -71,9 +73,11 @@ stages:
         approvers: 'kapil@kapilsharmamgcgvvgmail.onmicrosoft.com'
         instructions: 'Approve to continue'
 
+- stage:  TerraformApply1
+  displayName: Terraform Apply
+  dependsOn: TerraformManual1
+  jobs:
   - job:  TerraformApply
-    displayName: Terraform Apply Step
-    dependsOn: ManualValidate
     pool: My_pool
     steps:
     - task: TerraformTask@5
