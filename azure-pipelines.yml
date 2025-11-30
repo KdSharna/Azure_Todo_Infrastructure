@@ -59,18 +59,12 @@ jobs:
       workingDirectory: '$(repo)'
       environmentServiceNameAzureRM: 'Secret_Service'
 
-  # - task: TerraformTask@5
-  #   displayName: Terraform Apply
-  #   inputs:
-  #     provider: 'azurerm'
-  #     command: 'apply'
-  #     workingDirectory: '$(repo)'
-  #     environmentServiceNameAzureRM: 'Secret_Service'
-
-  # - task: TerraformTask@5
-  #   inputs:
-  #     provider: 'azurerm'
-  #     command: 'destroy'
-  #     workingDirectory: '$(repo)'
-  #     environmentServiceNameAzureRM: 'Secret_Service'
-  #     environmentAzureRmOverrideSubscriptionID: 'server'
+- job: ManualValidate
+  displayName: Manual Validation Step
+  dependsOn: TerraformBuild
+  steps:
+  - task: ManualValidation@1
+    inputs:
+      notifyUsers: 'kapil@kapilsharmamgcgvvgmail.onmicrosoft.com'
+      approvers: 'kapil@kapilsharmamgcgvvgmail.onmicrosoft.com'
+      instructions: 'Approve to continue'
