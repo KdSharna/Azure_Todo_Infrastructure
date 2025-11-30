@@ -6,8 +6,6 @@ trigger:
       - features101
 
 
-pool: My_pool
-
 variables:
   repo: 'environment/dev'
   server: '06f4c176-e41e-424a-bfc2-cb4b3a4e5fe5'
@@ -15,6 +13,7 @@ variables:
 jobs:
 - job: TerraformBuild
   displayName: Terraform Build
+  pool: My_pool
   steps:
   - task: TerraformInstaller@1
     displayName: Terraform Install
@@ -69,3 +68,28 @@ jobs:
       notifyUsers: 'kapil@kapilsharmamgcgvvgmail.onmicrosoft.com'
       approvers: 'kapil@kapilsharmamgcgvvgmail.onmicrosoft.com'
       instructions: 'Approve to continue'
+
+- job:  TerraformApply
+  displayName: Manual Apply Step
+  dependsOn: ManualValidate
+  pool: My_pool
+  steps:
+  - task: TerraformTask@5
+    inputs:
+      provider: 'azurerm'
+      command: 'init'
+      workingDirectory: '$(repo)'
+      backendServiceArm: 'Secret_Service'
+      backendAzureRmOverrideSubscriptionID: 'Secret_Service'
+      backendAzureRmResourceGroupName: 'pintu12'
+      backendAzureRmStorageAccountName: 'tattu101'
+      backendAzureRmContainerName: 'con99'
+      backendAzureRmKey: 'orange.terraform_state'
+
+  # - task: TerraformTask@5
+  #   inputs:
+  #     provider: 'azurerm'
+  #     command: 'apply'
+  #     workingDirectory: '$(repo)'
+  #     environmentServiceNameAzureRM: 'Secret_Service'
+  #     environmentAzureRmOverrideSubscriptionID: 'server'
