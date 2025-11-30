@@ -62,6 +62,7 @@ jobs:
 - job: ManualValidate
   displayName: Manual Validation Step
   dependsOn: TerraformBuild
+  pool: server
   steps:
   - task: ManualValidation@1
     inputs:
