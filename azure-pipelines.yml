@@ -65,9 +65,9 @@ steps:
 #     environmentServiceNameAzureRM: 'Secret_Service'
 
 - task: TerraformTask@5
-  displayName: Terraform Destroy
   inputs:
     provider: 'azurerm'
     command: 'destroy'
-    commandOptions: 'yes'
+    workingDirectory: '$(repo)'
     environmentServiceNameAzureRM: 'Secret_Service'
+    environmentAzureRmOverrideSubscriptionID: 'server'
