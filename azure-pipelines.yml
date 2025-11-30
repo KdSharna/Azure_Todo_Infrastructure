@@ -92,13 +92,13 @@ stages:
         backendAzureRmContainerName: 'con99'
         backendAzureRmKey: 'orange.terraform_state'
 
-    # - task: TerraformTask@5
-    #   inputs:
-    #     provider: 'azurerm'
-    #     command: 'apply'
-    #     workingDirectory: '$(repo)'
-    #     environmentServiceNameAzureRM: 'Secret_Service'
-    #     environmentAzureRmOverrideSubscriptionID: 'server'
+    - task: TerraformTask@5
+      inputs:
+        provider: 'azurerm'
+        command: 'apply'
+        workingDirectory: '$(repo)'
+        environmentServiceNameAzureRM: 'Secret_Service'
+        environmentAzureRmOverrideSubscriptionID: 'server'
     # - task: TerraformTask@5
     #   inputs:
     #     provider: 'azurerm'
