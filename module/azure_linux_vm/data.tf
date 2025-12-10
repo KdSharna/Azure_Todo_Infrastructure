@@ -7,7 +7,7 @@ data "azurerm_network_interface" "nic" {
 data "azurerm_key_vault" "kv" {
   for_each            = var.linux_vm
   name                = each.value.kv_name
-  resource_group_name = "pintu12"
+  resource_group_name = "pintu11"
 }
 
 data "azurerm_key_vault_secret" "username" {
