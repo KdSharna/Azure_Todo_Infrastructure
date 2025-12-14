@@ -26,3 +26,28 @@ steps:
     backendAzureRmContainerName: 'con99'
     backendAzureRmKey: 'orange.terraform_state'
 
+- task: TerraformTask@5
+  displayName: Terraform Fmt
+  inputs:
+    provider: 'azurerm'
+    command: 'custom'
+    workingDirectory: '$(kds)'
+    outputTo: 'console'
+    customCommand: 'fmt'
+    environmentServiceNameAzureRM: 'service_ado'
+    environmentAzureRmOverrideSubscriptionID: '$(sub)'
+
+- task: TerraformTask@5
+  displayName: Terraform Validate
+  inputs:
+    provider: 'azurerm'
+    command: 'validate'
+    workingDirectory: '$(kds)'
+
+- task: TerraformTask@5
+  displayName: Terraform Plan
+  inputs:
+    provider: 'azurerm'
+    command: 'plan'
+    workingDirectory: '$(kds)'
+    environmentServiceNameAzureRM: 'service_ado'
