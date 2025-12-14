@@ -25,7 +25,7 @@ steps:
     provider: 'azurerm'
     command: 'init'
     workingDirectory: '$(kds)'
-    backendServiceArm: 'my_service'
+    backendServiceArm: 'service_ado'
     backendAzureRmOverrideSubscriptionID: '$(sub)'
     backendAzureRmResourceGroupName: 'pintu11'
     backendAzureRmStorageAccountName: 'tattu102'
