@@ -6,13 +6,7 @@ pool: My_pool
 variables: 
   kds: '$(System.DefaultWorkingDirectory)/environment/dev'
   sub: 'a0366c1d-7e23-4176-93a9-0e084725b2d4'
-# stages:
 
-# - stage: TerraformBuild1
-#   displayName: Terraform Build
-#   jobs:
-#   - job: TerraformBuild
-#     pool: My_pool
 steps:
 - task: TerraformInstaller@1
   displayName: Terraform Install
@@ -32,88 +26,3 @@ steps:
     backendAzureRmContainerName: 'con99'
     backendAzureRmKey: 'orange.terraform_state'
 
-
-    # - task: TerraformTask@5
-    #   displayName: Terraform Init
-    #   inputs:
-    #     provider: 'azurerm'
-    #     command: 'init'
-    #     workingDirectory: '$(repo)'
-    #     backendServiceArm: 'Secret_Service'
-    #     backendAzureRmOverrideSubscriptionID: 'server'
-    #     backendAzureRmResourceGroupName: 'pintu12'
-    #     backendAzureRmStorageAccountName: 'tattu101'
-    #     backendAzureRmContainerName: 'con99'
-    #     backendAzureRmKey: 'orange.terraform_state'
-
-    # - task: TerraformTask@5
-    #   displayName: Terraform Validate
-    #   inputs:
-    #     provider: 'azurerm'
-    #     command: 'validate'
-    #     workingDirectory: '$(repo)'
-
-    # - task: TerraformTask@5
-    #   displayName: Terraform Fmt
-    #   inputs:
-    #     provider: 'azurerm'
-    #     command: 'custom'
-    #     workingDirectory: '$(repo)'
-    #     outputTo: 'console'
-    #     customCommand: 'fmt'
-    #     environmentServiceNameAzureRM: 'Secret_Service'
-
-#     - task: TerraformTask@5
-#       displayName: Terraform Plan
-#       inputs:
-#         provider: 'azurerm'
-#         command: 'plan'
-#         workingDirectory: '$(repo)'
-#         environmentServiceNameAzureRM: 'Secret_Service'
-
-# - stage: TerraformManual1
-#   displayName: Terraform Validate
-#   dependsOn:  TerraformBuild1
-#   jobs:
-#   - job: TerraformBuild
-#     pool: server
-#     steps:
-#     - task: ManualValidation@1
-#       inputs:
-#         notifyUsers: 'kapil@kapilsharmamgcgvvgmail.onmicrosoft.com'
-#         approvers: 'kapil@kapilsharmamgcgvvgmail.onmicrosoft.com'
-#         instructions: 'Approve to continue'
-
-# - stage:  TerraformApply1
-#   displayName: Terraform Apply
-#   dependsOn: TerraformManual1
-#   jobs:
-#   - job:  TerraformApply
-#     pool: My_pool
-#     steps:
-#     - task: TerraformTask@5
-#       inputs:
-#         provider: 'azurerm'
-#         command: 'init'
-#         workingDirectory: '$(repo)'
-#         backendServiceArm: 'Secret_Service'
-#         backendAzureRmOverrideSubscriptionID: 'Secret_Service'
-#         backendAzureRmResourceGroupName: 'pintu12'
-#         backendAzureRmStorageAccountName: 'tattu101'
-#         backendAzureRmContainerName: 'con99'
-#         backendAzureRmKey: 'orange.terraform_state'
-
-    # - task: TerraformTask@5
-    #   inputs:
-    #     provider: 'azurerm'
-    #     command: 'apply'
-    #     workingDirectory: '$(repo)'
-    #     environmentServiceNameAzureRM: 'Secret_Service'
-    #     environmentAzureRmOverrideSubscriptionID: 'server'
-    # - task: TerraformTask@5
-    #   inputs:
-    #     provider: 'azurerm'
-    #     command: 'destroy'
-    #     workingDirectory: '$(repo)'
-    #     environmentServiceNameAzureRM: 'Secret_Service'
-    #     environmentAzureRmOverrideSubscriptionID: 'server'
