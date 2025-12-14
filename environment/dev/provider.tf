@@ -3,17 +3,21 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "4.47.0"
+      version = "4.55.0"
     }
   }
   backend "azurerm" {
-    resource_group_name  = "pintu12"
-    storage_account_name = "tattu101"
+    resource_group_name  = "pintu11"
+    storage_account_name = "tattu102"
     container_name       = "con99"
     key                  = "orange.terraform_state"
   }
 }
 provider "azurerm" {
-  features {}
-  subscription_id = "06f4c176-e41e-424a-bfc2-cb4b3a4e5fe5"
+  features {
+        resource_group {
+      prevent_deletion_if_contains_resources = false
+    }
+  }
+  subscription_id = "a0366c1d-7e23-4176-93a9-0e084725b2d4"
 }
