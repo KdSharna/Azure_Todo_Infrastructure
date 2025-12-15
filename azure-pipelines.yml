@@ -6,6 +6,16 @@ variables:
   kds: '$(System.DefaultWorkingDirectory)/environment/dev'
   sub: 'a0366c1d-7e23-4176-93a9-0e084725b2d4'
 
+parameters:
+- name: environment
+  displayName: Select Environment
+  type: string
+  default: dev
+  values:
+  - dev
+  - qa
+  - prod
+
 jobs: 
 - job: TerraformInit
   displayName: Terraform Init
