@@ -1,65 +1,84 @@
 
 trigger: none
 
-pool: My_pool
+
 
 variables: 
   kds: '$(System.DefaultWorkingDirectory)/environment/dev'
   sub: 'a0366c1d-7e23-4176-93a9-0e084725b2d4'
 
-steps:
-- task: TerraformInstaller@1
-  displayName: Terraform Install
-  inputs:
-    terraformVersion: 'latest'
-
-- task: TerraformTask@5
+jobs: 
+- job: TerraformInit
   displayName: Terraform Init
-  inputs:
-    provider: 'azurerm'
-    command: 'init'
-    workingDirectory: '$(kds)'
-    backendServiceArm: 'service_ado'
-    backendAzureRmOverrideSubscriptionID: '$(sub)'
-    backendAzureRmResourceGroupName: 'pintu11'
-    backendAzureRmStorageAccountName: 'tattu102'
-    backendAzureRmContainerName: 'con99'
-    backendAzureRmKey: 'orange.terraform_state'
+  pool: My_pool
 
-- task: TerraformTask@5
-  displayName: Terraform Fmt
-  inputs:
-    provider: 'azurerm'
-    command: 'custom'
-    workingDirectory: '$(kds)'
-    outputTo: 'console'
-    customCommand: 'fmt'
-    environmentServiceNameAzureRM: 'service_ado'
-    environmentAzureRmOverrideSubscriptionID: '$(sub)'
+  steps:
+  - task: TerraformInstaller@1
+    displayName: Terraform Install
+    inputs:
+      terraformVersion: 'latest'
 
-- task: TerraformTask@5
-  displayName: Terraform Validate
-  inputs:
-    provider: 'azurerm'
-    command: 'validate'
-    workingDirectory: '$(kds)'
+  - task: TerraformTask@5
+    displayName: Terraform Init
+    inputs:
+      provider: 'azurerm'
+      command: 'init'
+      workingDirectory: '$(kds)'
+      backendServiceArm: 'service_ado'
+      backendAzureRmOverrideSubscriptionID: '$(sub)'
+      backendAzureRmResourceGroupName: 'pintu11'
+      backendAzureRmStorageAccountName: 'tattu102'
+      backendAzureRmContainerName: 'con99'
+      backendAzureRmKey: 'orange.terraform_state'
 
-- task: TerraformTask@5
-  displayName: Terraform Plan
-  inputs:
-    provider: 'azurerm'
-    command: 'plan'
-    workingDirectory: '$(kds)'
-    environmentServiceNameAzureRM: 'service_ado'
+  - task: TerraformTask@5
+    displayName: Terraform Fmt
+    inputs:
+      provider: 'azurerm'
+      command: 'custom'
+      workingDirectory: '$(kds)'
+      outputTo: 'console'
+      customCommand: 'fmt'
+      environmentServiceNameAzureRM: 'service_ado'
+      environmentAzureRmOverrideSubscriptionID: '$(sub)'
 
-- task: TerraformTask@5
-  displayName: Terraform Apply
-  inputs:
-    provider: 'azurerm'
-    command: 'apply'
-    workingDirectory: '$(kds)'
-    environmentServiceNameAzureRM: 'service_ado'
-    environmentAzureRmOverrideSubscriptionID: '$(sub)'
+  - task: TerraformTask@5
+    displayName: Terraform Validate
+    inputs:
+      provider: 'azurerm'
+      command: 'validate'
+      workingDirectory: '$(kds)'
+
+  - task: TerraformTask@5
+    displayName: Terraform Plan
+    inputs:
+      provider: 'azurerm'
+      command: 'plan'
+      workingDirectory: '$(kds)'
+      environmentServiceNameAzureRM: 'service_ado'
+
+
+- job: ManualValidation
+  displayName: Manual Validation
+  dependsOn:  TerraformInit
+  pool: server
+
+  steps:
+  - task: ManualValidation@1
+    inputs:
+      notifyUsers: 'kapil@kapilsharmamgcgvvgmail.onmicrosoft.com'
+      approvers: 'kapil@kapilsharmamgcgvvgmail.onmicrosoft.com'
+      instructions: 'Approve'
+
+
+# - task: TerraformTask@5
+#   displayName: Terraform Apply
+#   inputs:
+#     provider: 'azurerm'
+#     command: 'apply'
+#     workingDirectory: '$(kds)'
+#     environmentServiceNameAzureRM: 'service_ado'
+#     environmentAzureRmOverrideSubscriptionID: '$(sub)'
 
 # - task: TerraformTask@5
 #   displayName: Terraform Destroy
