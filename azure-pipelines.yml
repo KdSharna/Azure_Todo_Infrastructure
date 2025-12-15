@@ -108,7 +108,7 @@ jobs:
 
 - job: ManualValidation
   displayName: Manual Validation
-  dependsOn:  TerraformInit
+  dependsOn:  Infracost
   pool: server
 
   steps:
@@ -120,7 +120,7 @@ jobs:
 
 - job: TerraformApply
   displayName: Terraform Apply
-  dependsOn:  Infracost
+  dependsOn:  ManualValidation
   pool: My_pool
 
   steps:
