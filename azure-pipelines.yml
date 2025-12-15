@@ -196,9 +196,8 @@ stages:
         targetType: 'inline'
         script: |
           pip install checkov
-          
+
           checkov `
             -d "$(kds)" `
             --framework terraform `
-            --quiet `
             --soft-fail-on HIGH
