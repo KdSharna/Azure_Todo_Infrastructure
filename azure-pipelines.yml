@@ -16,147 +16,157 @@ parameters:
   - qa
   - prod
 
-jobs: 
-- job: TerraformInit
+stages: 
+- stage: TerraformInitStage
   displayName: Terraform Init - ${{ parameters.environment }}
   pool: My_pool
+  jobs: 
+  - job: TerraformInit
 
-  steps:
-  - task: TerraformInstaller@1
-    displayName: Terraform Install
-    inputs:
-      terraformVersion: 'latest'
+    steps:
+    - task: TerraformInstaller@1
+      displayName: Terraform Install
+      inputs:
+        terraformVersion: 'latest'
 
-  - task: TerraformTask@5
-    displayName: Terraform Init
-    inputs:
-      provider: 'azurerm'
-      command: 'init'
-      workingDirectory: '$(kds)'
-      backendServiceArm: 'service_ado'
-      backendAzureRmOverrideSubscriptionID: '$(sub)'
-      backendAzureRmResourceGroupName: 'pintu11'
-      backendAzureRmStorageAccountName: 'tattu102'
-      backendAzureRmContainerName: 'con99'
-      backendAzureRmKey: '${{ parameters.environment }}.terraform.tfstate'
+    - task: TerraformTask@5
+      displayName: Terraform Init
+      inputs:
+        provider: 'azurerm'
+        command: 'init'
+        workingDirectory: '$(kds)'
+        backendServiceArm: 'service_ado'
+        backendAzureRmOverrideSubscriptionID: '$(sub)'
+        backendAzureRmResourceGroupName: 'pintu11'
+        backendAzureRmStorageAccountName: 'tattu102'
+        backendAzureRmContainerName: 'con99'
+        backendAzureRmKey: '${{ parameters.environment }}.terraform.tfstate'
 
-  - task: TerraformTask@5
-    displayName: Terraform Fmt
-    inputs:
-      provider: 'azurerm'
-      command: 'custom'
-      workingDirectory: '$(kds)'
-      outputTo: 'console'
-      customCommand: 'fmt'
-      environmentServiceNameAzureRM: 'service_ado'
-      environmentAzureRmOverrideSubscriptionID: '$(sub)'
+    - task: TerraformTask@5
+      displayName: Terraform Fmt
+      inputs:
+        provider: 'azurerm'
+        command: 'custom'
+        workingDirectory: '$(kds)'
+        outputTo: 'console'
+        customCommand: 'fmt'
+        environmentServiceNameAzureRM: 'service_ado'
+        environmentAzureRmOverrideSubscriptionID: '$(sub)'
 
-  - task: TerraformTask@5
-    displayName: Terraform Validate
-    inputs:
-      provider: 'azurerm'
-      command: 'validate'
-      workingDirectory: '$(kds)'
+    - task: TerraformTask@5
+      displayName: Terraform Validate
+      inputs:
+        provider: 'azurerm'
+        command: 'validate'
+        workingDirectory: '$(kds)'
 
-  - task: TerraformTask@5
-    displayName: Terraform Plan
-    inputs:
-      provider: 'azurerm'
-      command: 'plan'
-      workingDirectory: '$(kds)'
-      environmentServiceNameAzureRM: 'service_ado'
+    - task: TerraformTask@5
+      displayName: Terraform Plan
+      inputs:
+        provider: 'azurerm'
+        command: 'plan'
+        workingDirectory: '$(kds)'
+        environmentServiceNameAzureRM: 'service_ado'
 
-- job: TFLint
+- stage: TFLintStages
   displayName: TFLint Scan - ${{ parameters.environment }}
-  dependsOn:  TerraformInit
+  dependsOn:  TerraformInitStage
   pool: My_pool
+  jobs: 
+  - job: TFLint
 
-  steps:
-  - task: PowerShell@2
-    inputs:
-      targetType: 'inline'
-      script: |
-        tflint --init
-        tflint --recursive
-      workingDirectory: '$(kds)'
+    steps:
+    - task: PowerShell@2
+      inputs:
+        targetType: 'inline'
+        script: |
+          tflint --init
+          tflint --recursive
+        workingDirectory: '$(kds)'
 
-
-- job: TFSec
-  displayName: TFSec Scan - ${{ parameters.environment }}
-  dependsOn:  TFLint
+- stage: TFSecStages
+  displayName: TFLint Scan - ${{ parameters.environment }}
+  dependsOn:  TFLintStages
   pool: My_pool
+  jobs: 
+  - job: TFSec
 
-  steps:
-  - task: tfsec@1
-    inputs:
-      version: 'v1.26.0'
-      dir: '$(kds)'
+    steps:
+    - task: tfsec@1
+      inputs:
+        version: 'v1.26.0'
+        dir: '$(kds)'
 
-- job: Infracost
+- stage: InfracostStages
   displayName: Infracost Scan - ${{ parameters.environment }}
-  dependsOn:  TFSec
+  dependsOn: TFSecStages
   pool: My_pool
+  jobs:
+  - job: Infracost
 
-  steps:
-  - task: PowerShell@2
-    inputs:
-      targetType: 'inline'
-      script: 'infracost breakdown --path=tfplan --format=table'
-      workingDirectory: '$(kds)'
+    steps:
+    - task: PowerShell@2
+      inputs:
+        targetType: 'inline'
+        script: 'infracost breakdown --path=tfplan --format=table'
+        workingDirectory: '$(kds)'
 
 
-
-- job: ManualValidation
+- stage: ManualValidationStages
   displayName: Manual Validation - ${{ parameters.environment }}
-  dependsOn:  Infracost
+  dependsOn: InfracostStages
   pool: server
+  jobs: 
+  - job: ManualValidation
 
-  steps:
-  - task: ManualValidation@1
-    inputs:
-      notifyUsers: 'kapil@kapilsharmamgcgvvgmail.onmicrosoft.com'
-      approvers: 'kapil@kapilsharmamgcgvvgmail.onmicrosoft.com'
-      instructions: 'Approve'
+    steps:
+    - task: ManualValidation@1
+      inputs:
+        notifyUsers: 'kapil@kapilsharmamgcgvvgmail.onmicrosoft.com'
+        approvers: 'kapil@kapilsharmamgcgvvgmail.onmicrosoft.com'
+        instructions: 'Approve'
 
-- job: TerraformApply
-  displayName: Terraform Apply - ${{ parameters.environment }}
-  dependsOn:  ManualValidation
+- stage: TerraformApplyStages
+  displayName: Terraform Install - ${{ parameters.environment }}
+  dependsOn: ManualValidationStages
   pool: My_pool
+  jobs: 
+  - job: TerraformApply
 
-  steps:
-  - task: TerraformInstaller@1
-    displayName: Terraform Install
-    inputs:
-      terraformVersion: 'latest'
+    steps:
+    - task: TerraformInstaller@1
+      displayName: Terraform Install
+      inputs:
+        terraformVersion: 'latest'
 
-  - task: TerraformTask@5
-    displayName: Terraform Init
-    inputs:
-      provider: 'azurerm'
-      command: 'init'
-      workingDirectory: '$(kds)'
-      backendServiceArm: 'service_ado'
-      backendAzureRmOverrideSubscriptionID: '$(sub)'
-      backendAzureRmResourceGroupName: 'pintu11'
-      backendAzureRmStorageAccountName: 'tattu102'
-      backendAzureRmContainerName: 'con99'
-      backendAzureRmKey: 'orange.terraform_state'
+    - task: TerraformTask@5
+      displayName: Terraform Init
+      inputs:
+        provider: 'azurerm'
+        command: 'init'
+        workingDirectory: '$(kds)'
+        backendServiceArm: 'service_ado'
+        backendAzureRmOverrideSubscriptionID: '$(sub)'
+        backendAzureRmResourceGroupName: 'pintu11'
+        backendAzureRmStorageAccountName: 'tattu102'
+        backendAzureRmContainerName: 'con99'
+        backendAzureRmKey: 'orange.terraform_state'
 
-
-  - task: TerraformTask@5
-    displayName: Terraform Apply
-    inputs:
-      provider: 'azurerm'
-      command: 'apply'
-      workingDirectory: '$(kds)'
-      environmentServiceNameAzureRM: 'service_ado'
-      environmentAzureRmOverrideSubscriptionID: '$(sub)'
 
   # - task: TerraformTask@5
-  #   displayName: Terraform Destroy
+  #   displayName: Terraform Apply
   #   inputs:
   #     provider: 'azurerm'
-  #     command: 'destroy'
+  #     command: 'apply'
   #     workingDirectory: '$(kds)'
   #     environmentServiceNameAzureRM: 'service_ado'
   #     environmentAzureRmOverrideSubscriptionID: '$(sub)'
+
+    - task: TerraformTask@5
+      displayName: Terraform Destroy
+      inputs:
+        provider: 'azurerm'
+        command: 'destroy'
+        workingDirectory: '$(kds)'
+        environmentServiceNameAzureRM: 'service_ado'
+        environmentAzureRmOverrideSubscriptionID: '$(sub)'
