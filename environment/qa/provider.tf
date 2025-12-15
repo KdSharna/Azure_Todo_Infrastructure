@@ -10,7 +10,7 @@ terraform {
     resource_group_name  = "pintu11"
     storage_account_name = "tattu102"
     container_name       = "con99"
-    key                  = "dev_orange.terraform_state"
+    key                  = "qa_orange.terraform_state"
   }
 }
 provider "azurerm" {
