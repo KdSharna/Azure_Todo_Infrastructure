@@ -49,30 +49,41 @@ jobs:
       command: 'validate'
       workingDirectory: '$(kds)'
 
-  - task: TerraformTask@5
-    displayName: Terraform Plan
-    inputs:
-      provider: 'azurerm'
-      command: 'plan'
-      workingDirectory: '$(kds)'
-      environmentServiceNameAzureRM: 'service_ado'
+  # - task: TerraformTask@5
+  #   displayName: Terraform Plan
+  #   inputs:
+  #     provider: 'azurerm'
+  #     command: 'plan'
+  #     workingDirectory: '$(kds)'
+  #     environmentServiceNameAzureRM: 'service_ado'
 
-
-- job: ManualValidation
-  displayName: Manual Validation
+- job: TFSec
+  displayName: TFSec Scan
   dependsOn:  TerraformInit
-  pool: server
+  pool: My_pool
 
   steps:
-  - task: ManualValidation@1
+  - task: tfsec@1
     inputs:
-      notifyUsers: 'kapil@kapilsharmamgcgvvgmail.onmicrosoft.com'
-      approvers: 'kapil@kapilsharmamgcgvvgmail.onmicrosoft.com'
-      instructions: 'Approve'
+      version: 'v1.26.0'
+      dir: '$(WORKDIR)'
+
+
+# - job: ManualValidation
+#   displayName: Manual Validation
+#   dependsOn:  TerraformInit
+#   pool: server
+
+#   steps:
+#   - task: ManualValidation@1
+#     inputs:
+#       notifyUsers: 'kapil@kapilsharmamgcgvvgmail.onmicrosoft.com'
+#       approvers: 'kapil@kapilsharmamgcgvvgmail.onmicrosoft.com'
+#       instructions: 'Approve'
 
 - job: TerraformApply
   displayName: Terraform Apply
-  dependsOn:  ManualValidation
+  dependsOn:  TFSec
   pool: My_pool
 
   steps:
@@ -104,11 +115,11 @@ jobs:
 #     environmentServiceNameAzureRM: 'service_ado'
 #     environmentAzureRmOverrideSubscriptionID: '$(sub)'
 
-  - task: TerraformTask@5
-    displayName: Terraform Destroy
-    inputs:
-      provider: 'azurerm'
-      command: 'destroy'
-      workingDirectory: '$(kds)'
-      environmentServiceNameAzureRM: 'service_ado'
-      environmentAzureRmOverrideSubscriptionID: '$(sub)'
+  # - task: TerraformTask@5
+  #   displayName: Terraform Destroy
+  #   inputs:
+  #     provider: 'azurerm'
+  #     command: 'destroy'
+  #     workingDirectory: '$(kds)'
+  #     environmentServiceNameAzureRM: 'service_ado'
+  #     environmentAzureRmOverrideSubscriptionID: '$(sub)'
