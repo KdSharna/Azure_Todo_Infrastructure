@@ -53,6 +53,7 @@ steps:
     environmentServiceNameAzureRM: 'service_ado'
 
 - task: TerraformTask@5
+  displayName: Terraform Apply
   inputs:
     provider: 'azurerm'
     command: 'apply'
@@ -61,6 +62,7 @@ steps:
     environmentAzureRmOverrideSubscriptionID: '$(sub)'
 
 # - task: TerraformTask@5
+#   displayName: Terraform Destroy
 #   inputs:
 #     provider: 'azurerm'
 #     command: 'destroy'
