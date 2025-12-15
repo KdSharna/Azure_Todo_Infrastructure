@@ -51,3 +51,19 @@ steps:
     command: 'plan'
     workingDirectory: '$(kds)'
     environmentServiceNameAzureRM: 'service_ado'
+
+- task: TerraformTask@5
+  inputs:
+    provider: 'azurerm'
+    command: 'apply'
+    workingDirectory: '$(kds)'
+    environmentServiceNameAzureRM: 'service_ado'
+    environmentAzureRmOverrideSubscriptionID: '$(sub)'
+
+# - task: TerraformTask@5
+#   inputs:
+#     provider: 'azurerm'
+#     command: 'destroy'
+#     workingDirectory: '$(kds)'
+#     environmentServiceNameAzureRM: 'service_ado'
+#     environmentAzureRmOverrideSubscriptionID: '$(sub)'
