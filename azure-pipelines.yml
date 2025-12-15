@@ -2,7 +2,6 @@
 trigger: none
 
 
-
 variables: 
   kds: '$(System.DefaultWorkingDirectory)/environment/dev'
   sub: 'a0366c1d-7e23-4176-93a9-0e084725b2d4'
@@ -97,17 +96,17 @@ jobs:
 
 
 
-# - job: ManualValidation
-#   displayName: Manual Validation
-#   dependsOn:  TerraformInit
-#   pool: server
+- job: ManualValidation
+  displayName: Manual Validation
+  dependsOn:  TerraformInit
+  pool: server
 
-#   steps:
-#   - task: ManualValidation@1
-#     inputs:
-#       notifyUsers: 'kapil@kapilsharmamgcgvvgmail.onmicrosoft.com'
-#       approvers: 'kapil@kapilsharmamgcgvvgmail.onmicrosoft.com'
-#       instructions: 'Approve'
+  steps:
+  - task: ManualValidation@1
+    inputs:
+      notifyUsers: 'kapil@kapilsharmamgcgvvgmail.onmicrosoft.com'
+      approvers: 'kapil@kapilsharmamgcgvvgmail.onmicrosoft.com'
+      instructions: 'Approve'
 
 - job: TerraformApply
   displayName: Terraform Apply
@@ -134,14 +133,14 @@ jobs:
       backendAzureRmKey: 'orange.terraform_state'
 
 
-# - task: TerraformTask@5
-#   displayName: Terraform Apply
-#   inputs:
-#     provider: 'azurerm'
-#     command: 'apply'
-#     workingDirectory: '$(kds)'
-#     environmentServiceNameAzureRM: 'service_ado'
-#     environmentAzureRmOverrideSubscriptionID: '$(sub)'
+  # - task: TerraformTask@5
+  #   displayName: Terraform Apply
+  #   inputs:
+  #     provider: 'azurerm'
+  #     command: 'apply'
+  #     workingDirectory: '$(kds)'
+  #     environmentServiceNameAzureRM: 'service_ado'
+  #     environmentAzureRmOverrideSubscriptionID: '$(sub)'
 
   # - task: TerraformTask@5
   #   displayName: Terraform Destroy
