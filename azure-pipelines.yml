@@ -66,91 +66,91 @@ jobs:
       workingDirectory: '$(kds)'
       environmentServiceNameAzureRM: 'service_ado'
 
-# - job: TFLint
-#   displayName: TFLint Scan
-#   dependsOn:  TerraformInit
-#   pool: My_pool
+- job: TFLint
+  displayName: TFLint Scan - ${{ parameters.environment }}
+  dependsOn:  TerraformInit
+  pool: My_pool
 
-#   steps:
-#   - task: PowerShell@2
-#     inputs:
-#       targetType: 'inline'
-#       script: |
-#         tflint --init
-#         tflint --recursive
-#       workingDirectory: '$(kds)'
-
-
-# - job: TFSec
-#   displayName: TFSec Scan
-#   dependsOn:  TFLint
-#   pool: My_pool
-
-#   steps:
-#   - task: tfsec@1
-#     inputs:
-#       version: 'v1.26.0'
-#       dir: '$(kds)'
-
-# - job: Infracost
-#   displayName: Infracost Scan
-#   dependsOn:  TFSec
-#   pool: My_pool
-
-#   steps:
-#   - task: PowerShell@2
-#     inputs:
-#       targetType: 'inline'
-#       script: 'infracost breakdown --path=tfplan --format=table'
-#       workingDirectory: '$(kds)'
+  steps:
+  - task: PowerShell@2
+    inputs:
+      targetType: 'inline'
+      script: |
+        tflint --init
+        tflint --recursive
+      workingDirectory: '$(kds)'
 
 
+- job: TFSec
+  displayName: TFSec Scan - ${{ parameters.environment }}
+  dependsOn:  TFLint
+  pool: My_pool
 
-# - job: ManualValidation
-#   displayName: Manual Validation
-#   dependsOn:  Infracost
-#   pool: server
+  steps:
+  - task: tfsec@1
+    inputs:
+      version: 'v1.26.0'
+      dir: '$(kds)'
 
-#   steps:
-#   - task: ManualValidation@1
-#     inputs:
-#       notifyUsers: 'kapil@kapilsharmamgcgvvgmail.onmicrosoft.com'
-#       approvers: 'kapil@kapilsharmamgcgvvgmail.onmicrosoft.com'
-#       instructions: 'Approve'
+- job: Infracost
+  displayName: Infracost Scan - ${{ parameters.environment }}
+  dependsOn:  TFSec
+  pool: My_pool
 
-# - job: TerraformApply
-#   displayName: Terraform Apply
-#   dependsOn:  ManualValidation
-#   pool: My_pool
-
-#   steps:
-#   - task: TerraformInstaller@1
-#     displayName: Terraform Install
-#     inputs:
-#       terraformVersion: 'latest'
-
-#   - task: TerraformTask@5
-#     displayName: Terraform Init
-#     inputs:
-#       provider: 'azurerm'
-#       command: 'init'
-#       workingDirectory: '$(kds)'
-#       backendServiceArm: 'service_ado'
-#       backendAzureRmOverrideSubscriptionID: '$(sub)'
-#       backendAzureRmResourceGroupName: 'pintu11'
-#       backendAzureRmStorageAccountName: 'tattu102'
-#       backendAzureRmContainerName: 'con99'
-#       backendAzureRmKey: 'orange.terraform_state'
+  steps:
+  - task: PowerShell@2
+    inputs:
+      targetType: 'inline'
+      script: 'infracost breakdown --path=tfplan --format=table'
+      workingDirectory: '$(kds)'
 
 
-  # - task: TerraformTask@5
-  #   displayName: Terraform Apply
-  #   inputs:
-  #     provider: 'azurerm'
-  #     command: 'apply'
-  #     workingDirectory: '$(kds)'
-  #     environmentServiceNameAzureRM: 'service_ado'
-  #     environmentAzureRmOverrideSubscriptionID: '$(sub)'
+
+- job: ManualValidation
+  displayName: Manual Validation - ${{ parameters.environment }}
+  dependsOn:  Infracost
+  pool: server
+
+  steps:
+  - task: ManualValidation@1
+    inputs:
+      notifyUsers: 'kapil@kapilsharmamgcgvvgmail.onmicrosoft.com'
+      approvers: 'kapil@kapilsharmamgcgvvgmail.onmicrosoft.com'
+      instructions: 'Approve'
+
+- job: TerraformApply
+  displayName: Terraform Apply - ${{ parameters.environment }}
+  dependsOn:  ManualValidation
+  pool: My_pool
+
+  steps:
+  - task: TerraformInstaller@1
+    displayName: Terraform Install
+    inputs:
+      terraformVersion: 'latest'
+
+  - task: TerraformTask@5
+    displayName: Terraform Init
+    inputs:
+      provider: 'azurerm'
+      command: 'init'
+      workingDirectory: '$(kds)'
+      backendServiceArm: 'service_ado'
+      backendAzureRmOverrideSubscriptionID: '$(sub)'
+      backendAzureRmResourceGroupName: 'pintu11'
+      backendAzureRmStorageAccountName: 'tattu102'
+      backendAzureRmContainerName: 'con99'
+      backendAzureRmKey: 'orange.terraform_state'
+
+
+  - task: TerraformTask@5
+    displayName: Terraform Apply
+    inputs:
+      provider: 'azurerm'
+      command: 'apply'
+      workingDirectory: '$(kds)'
+      environmentServiceNameAzureRM: 'service_ado'
+      environmentAzureRmOverrideSubscriptionID: '$(sub)'
 
   # - task: TerraformTask@5
   #   displayName: Terraform Destroy
