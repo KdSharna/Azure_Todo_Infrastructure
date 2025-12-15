@@ -10,7 +10,7 @@ parameters:
 - name: environment
   displayName: Environment
   type: string
-  default: prod
+  default: dev
   values:
   - dev
   - qa
