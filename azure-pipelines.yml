@@ -72,8 +72,6 @@ jobs:
       workingDirectory: '$(kds)'
 
 
-
-
 - job: TFSec
   displayName: TFSec Scan
   dependsOn:  TFLint
@@ -84,6 +82,19 @@ jobs:
     inputs:
       version: 'v1.26.0'
       dir: '$(kds)'
+
+- job: Infracost
+  displayName: Infracost Scan
+  dependsOn:  TFSec
+  pool: My_pool
+
+  steps:
+  - task: PowerShell@2
+    inputs:
+      targetType: 'inline'
+      script: 'infracost breakdown --path=,'
+      workingDirectory: '$(kds)'
+
 
 
 # - job: ManualValidation
@@ -100,7 +111,7 @@ jobs:
 
 - job: TerraformApply
   displayName: Terraform Apply
-  dependsOn:  TFSec
+  dependsOn:  Infracost
   pool: My_pool
 
   steps:
