@@ -49,13 +49,13 @@ jobs:
       command: 'validate'
       workingDirectory: '$(kds)'
 
-  # - task: TerraformTask@5
-  #   displayName: Terraform Plan
-  #   inputs:
-  #     provider: 'azurerm'
-  #     command: 'plan'
-  #     workingDirectory: '$(kds)'
-  #     environmentServiceNameAzureRM: 'service_ado'
+  - task: TerraformTask@5
+    displayName: Terraform Plan
+    inputs:
+      provider: 'azurerm'
+      command: 'plan'
+      workingDirectory: '$(kds)'
+      environmentServiceNameAzureRM: 'service_ado'
 
 - job: TFLint
   displayName: TFLint Scan
