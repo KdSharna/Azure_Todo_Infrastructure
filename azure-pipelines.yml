@@ -64,11 +64,10 @@ jobs:
 
   steps:
   - task: PowerShell@2
-    displayName: Install & Run TFLint
     inputs:
       targetType: 'inline'
       script: |
-        winget install --id Terraform-Linters.TFLint
+        winget install TerraformLinters.tflint
         ls
         tflint
       workingDirectory: '$(kds)'
