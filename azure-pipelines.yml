@@ -3,7 +3,7 @@ trigger: none
 
 
 variables: 
-  kds: '$(System.DefaultWorkingDirectory)/environment/dev'
+  kds: '$(System.DefaultWorkingDirectory)/environment/${{ parameters.environment }}'
   sub: 'a0366c1d-7e23-4176-93a9-0e084725b2d4'
 
 parameters:
@@ -18,7 +18,7 @@ parameters:
 
 jobs: 
 - job: TerraformInit
-  displayName: Terraform Init
+  displayName: Terraform Init - ${{ parameters.environment }}
   pool: My_pool
 
   steps:
@@ -38,7 +38,7 @@ jobs:
       backendAzureRmResourceGroupName: 'pintu11'
       backendAzureRmStorageAccountName: 'tattu102'
       backendAzureRmContainerName: 'con99'
-      backendAzureRmKey: 'orange.terraform_state'
+      backendAzureRmKey: '${{ parameters.environment }}.terraform.tfstate'
 
   - task: TerraformTask@5
     displayName: Terraform Fmt
@@ -66,81 +66,81 @@ jobs:
       workingDirectory: '$(kds)'
       environmentServiceNameAzureRM: 'service_ado'
 
-- job: TFLint
-  displayName: TFLint Scan
-  dependsOn:  TerraformInit
-  pool: My_pool
+# - job: TFLint
+#   displayName: TFLint Scan
+#   dependsOn:  TerraformInit
+#   pool: My_pool
 
-  steps:
-  - task: PowerShell@2
-    inputs:
-      targetType: 'inline'
-      script: |
-        tflint --init
-        tflint --recursive
-      workingDirectory: '$(kds)'
-
-
-- job: TFSec
-  displayName: TFSec Scan
-  dependsOn:  TFLint
-  pool: My_pool
-
-  steps:
-  - task: tfsec@1
-    inputs:
-      version: 'v1.26.0'
-      dir: '$(kds)'
-
-- job: Infracost
-  displayName: Infracost Scan
-  dependsOn:  TFSec
-  pool: My_pool
-
-  steps:
-  - task: PowerShell@2
-    inputs:
-      targetType: 'inline'
-      script: 'infracost breakdown --path=tfplan --format=table'
-      workingDirectory: '$(kds)'
+#   steps:
+#   - task: PowerShell@2
+#     inputs:
+#       targetType: 'inline'
+#       script: |
+#         tflint --init
+#         tflint --recursive
+#       workingDirectory: '$(kds)'
 
 
+# - job: TFSec
+#   displayName: TFSec Scan
+#   dependsOn:  TFLint
+#   pool: My_pool
 
-- job: ManualValidation
-  displayName: Manual Validation
-  dependsOn:  Infracost
-  pool: server
+#   steps:
+#   - task: tfsec@1
+#     inputs:
+#       version: 'v1.26.0'
+#       dir: '$(kds)'
 
-  steps:
-  - task: ManualValidation@1
-    inputs:
-      notifyUsers: 'kapil@kapilsharmamgcgvvgmail.onmicrosoft.com'
-      approvers: 'kapil@kapilsharmamgcgvvgmail.onmicrosoft.com'
-      instructions: 'Approve'
+# - job: Infracost
+#   displayName: Infracost Scan
+#   dependsOn:  TFSec
+#   pool: My_pool
 
-- job: TerraformApply
-  displayName: Terraform Apply
-  dependsOn:  ManualValidation
-  pool: My_pool
+#   steps:
+#   - task: PowerShell@2
+#     inputs:
+#       targetType: 'inline'
+#       script: 'infracost breakdown --path=tfplan --format=table'
+#       workingDirectory: '$(kds)'
 
-  steps:
-  - task: TerraformInstaller@1
-    displayName: Terraform Install
-    inputs:
-      terraformVersion: 'latest'
 
-  - task: TerraformTask@5
-    displayName: Terraform Init
-    inputs:
-      provider: 'azurerm'
-      command: 'init'
-      workingDirectory: '$(kds)'
-      backendServiceArm: 'service_ado'
-      backendAzureRmOverrideSubscriptionID: '$(sub)'
-      backendAzureRmResourceGroupName: 'pintu11'
-      backendAzureRmStorageAccountName: 'tattu102'
-      backendAzureRmContainerName: 'con99'
-      backendAzureRmKey: 'orange.terraform_state'
+
+# - job: ManualValidation
+#   displayName: Manual Validation
+#   dependsOn:  Infracost
+#   pool: server
+
+#   steps:
+#   - task: ManualValidation@1
+#     inputs:
+#       notifyUsers: 'kapil@kapilsharmamgcgvvgmail.onmicrosoft.com'
+#       approvers: 'kapil@kapilsharmamgcgvvgmail.onmicrosoft.com'
+#       instructions: 'Approve'
+
+# - job: TerraformApply
+#   displayName: Terraform Apply
+#   dependsOn:  ManualValidation
+#   pool: My_pool
+
+#   steps:
+#   - task: TerraformInstaller@1
+#     displayName: Terraform Install
+#     inputs:
+#       terraformVersion: 'latest'
+
+#   - task: TerraformTask@5
+#     displayName: Terraform Init
+#     inputs:
+#       provider: 'azurerm'
+#       command: 'init'
+#       workingDirectory: '$(kds)'
+#       backendServiceArm: 'service_ado'
+#       backendAzureRmOverrideSubscriptionID: '$(sub)'
+#       backendAzureRmResourceGroupName: 'pintu11'
+#       backendAzureRmStorageAccountName: 'tattu102'
+#       backendAzureRmContainerName: 'con99'
+#       backendAzureRmKey: 'orange.terraform_state'
 
 
   # - task: TerraformTask@5
