@@ -57,9 +57,32 @@ jobs:
   #     workingDirectory: '$(kds)'
   #     environmentServiceNameAzureRM: 'service_ado'
 
+- job: TFLint
+  displayName: TFLint Scan
+  dependsOn:  TerraformInit
+  pool: My_pool
+
+  steps:
+  - task: PowerShell@2
+    displayName: Install & Run TFLint
+    inputs:
+      targetType: 'inline'
+      script: |
+        # Install TFLint via winget
+        winget install --id Terraform-Linters.TFLint
+        tflint
+        tflint --version
+        
+        # Init & scan
+        tflint --init
+        tflint --recursive
+      workingDirectory: '$(kds)'
+
+
+
 - job: TFSec
   displayName: TFSec Scan
-  dependsOn:  TerraformInit
+  dependsOn:  TFLint
   pool: My_pool
 
   steps:
