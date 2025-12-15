@@ -67,17 +67,11 @@ jobs:
     displayName: Install & Run TFLint
     inputs:
       targetType: 'inline'
-      workingDirectory: '$(kds)'
       script: |
-        # Install TFLint via winget
-        winget install --id Terraform-Linters.TFLint -e --accept-package-agreements --accept-source-agreements
-        
-        # Check version
-        tflint --version
-        
-        # Init & scan
-        tflint --init
-        tflint --recursive
+        winget install --id Terraform-Linters.TFLint
+        ls
+        tflint
+      workingDirectory: '$(kds)'
 
 
 
