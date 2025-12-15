@@ -66,7 +66,7 @@ jobs:
   - task: tfsec@1
     inputs:
       version: 'v1.26.0'
-      dir: '$(WORKDIR)'
+      dir: '$(kds)'
 
 
 # - job: ManualValidation
