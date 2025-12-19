@@ -11,7 +11,8 @@ resource "azurerm_linux_virtual_machine" "linux_vm" {
   admin_password      = data.azurerm_key_vault_secret.password[each.key].value
  disable_password_authentication = false
  
-custom_data = base64encode(file(each.value.script_name))
+# custom_data = base64encode(file(each.value.script_name))
+custom_data = base64encode(file("${path.module}/${each.value.script_name}"))
 
   network_interface_ids = [
     data.azurerm_network_interface.nic[each.key].id
