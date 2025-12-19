@@ -154,50 +154,50 @@ stages:
         backendAzureRmKey: 'orange.terraform_state'
 
 
-  # - task: TerraformTask@5
-  #   displayName: Terraform Apply
-  #   inputs:
-  #     provider: 'azurerm'
-  #     command: 'apply'
-  #     workingDirectory: '$(kds)'
-  #     environmentServiceNameAzureRM: 'service_ado'
-  #     environmentAzureRmOverrideSubscriptionID: '$(sub)'
-
     - task: TerraformTask@5
-      displayName: Terraform Destroy
+      displayName: Terraform Apply
       inputs:
         provider: 'azurerm'
-        command: 'destroy'
+        command: 'apply'
         workingDirectory: '$(kds)'
         environmentServiceNameAzureRM: 'service_ado'
         environmentAzureRmOverrideSubscriptionID: '$(sub)'
 
-- stage: PythonInstallStages
-  displayName: PythonInstall - ${{ parameters.environment }}
-  dependsOn: TerraformApplyStages
+    # - task: TerraformTask@5
+    #   displayName: Terraform Destroy
+    #   inputs:
+    #     provider: 'azurerm'
+    #     command: 'destroy'
+    #     workingDirectory: '$(kds)'
+    #     environmentServiceNameAzureRM: 'service_ado'
+    #     environmentAzureRmOverrideSubscriptionID: '$(sub)'
 
-  jobs: 
-  - job: PythonInstall
-    pool: My_pool
-    steps:
-    - task: UsePythonVersion@0
-      inputs:
-        versionSpec: '3.x'
+# - stage: PythonInstallStages
+#   displayName: PythonInstall - ${{ parameters.environment }}
+#   dependsOn: TerraformApplyStages
 
-- stage: CheckovStages
-  displayName: Checkov - ${{ parameters.environment }}
-  dependsOn: PythonInstallStages
-  jobs: 
-  - job: Checkov
-    pool: My_pool
-    steps:
-    - task: PowerShell@2
-      inputs:
-        targetType: 'inline'
-        script: |
-          pip install checkov
+#   jobs: 
+#   - job: PythonInstall
+#     pool: My_pool
+#     steps:
+#     - task: UsePythonVersion@0
+#       inputs:
+#         versionSpec: '3.x'
 
-          checkov `
-            -d "$(kds)" `
-            --framework terraform `
-            --soft-fail-on HIGH
+# - stage: CheckovStages
+#   displayName: Checkov - ${{ parameters.environment }}
+#   dependsOn: PythonInstallStages
+#   jobs: 
+#   - job: Checkov
+#     pool: My_pool
+#     steps:
+#     - task: PowerShell@2
+#       inputs:
+#         targetType: 'inline'
+#         script: |
+#           pip install checkov
+
+#           checkov `
+#             -d "$(kds)" `
+#             --framework terraform `
+#             --soft-fail-on HIGH
