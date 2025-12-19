@@ -48,7 +48,8 @@ nw_virtual = {
     resource_group_name = "tittu11"
     location            = "west us"
     address_space       = ["10.0.0.0/16"]
-    dns_servers         = ["10.0.0.4", "10.0.0.5"]
+    dns_servers = ["8.8.8.8", "1.1.1.1"]
+
 
     subnet = [
       {
@@ -77,7 +78,7 @@ vm_linux = {
     admin_password = "vm-password"
     vnet_name      = "fe_vnet"
     subnet_name    = "fe_subnet"
-    script_name    = "nginx.sh"
+    script_name    = "nginx.yaml"
     source_image_reference = {
       image1 = {
         offer     = "0001-com-ubuntu-server-jammy"
@@ -99,7 +100,7 @@ vm_linux = {
     admin_password = "vm-password"
     vnet_name      = "fe_vnet"
     subnet_name    = "be_subnet"
-    script_name    = "python.sh"
+    script_name    = "python.yaml"
     source_image_reference = {
       image1 = {
         publisher = "Canonical"
@@ -111,28 +112,28 @@ vm_linux = {
   }
 }
 
-# serversql = {
-#   server1 = {
-#     name                         = "mysqlservertittu123"
-#     resource_group_name          = "tittu11"
-#     location                     = "west us"
-#     version                      = "12.0"
-#     administrator_login          = "Tattu01!@"
-#     administrator_login_password = "Tattu!12345"
-#     minimum_tls_version          = "1.2"
+serversql = {
+  server1 = {
+    name                         = "mysqlservertittu123"
+    resource_group_name          = "tittu11"
+    location                     = "west us"
+    version                      = "12.0"
+    administrator_login          = "Tattu01!@"
+    administrator_login_password = "Tattu!12345"
+    minimum_tls_version          = "1.2"
 
-#   }
-# }
+  }
+}
 
-# databasesql = {
-#   database1 = {
-#     name         = "mysqldatabase"
-#     sql_name     = "mysqlservertittu123"
-#     collation    = "SQL_Latin1_General_CP1_CI_AS"
-#     license_type = "LicenseIncluded"
-#     max_size_gb  = 2
-#     sku_name     = "S0"
-#     enclave_type = "VBS"
-#     rg_name      = "tittu11"
-#   }
-# }
+databasesql = {
+  database1 = {
+    name         = "mysqldatabase"
+    sql_name     = "mysqlservertittu123"
+    collation    = "SQL_Latin1_General_CP1_CI_AS"
+    license_type = "LicenseIncluded"
+    max_size_gb  = 2
+    sku_name     = "S0"
+    enclave_type = "VBS"
+    rg_name      = "tittu11"
+  }
+}
