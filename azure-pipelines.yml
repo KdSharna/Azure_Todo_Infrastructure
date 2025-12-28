@@ -152,12 +152,10 @@ stages:
       inputs:
         targetType: 'inline'
         script: |
-          $scannerPath = "$(Build.SourcesDirectory)\tools\sonar-scanner"
-
-          # Add SonarScanner bin to PATH
+          $scannerPath = "C:\Tools\checkov_windows_X86_64\sonar-scanner-8.0.1.6346-windows-x64"
           $env:PATH += ";$scannerPath\bin"
 
-          # Run SonarQube scan
+          # Run SonarScanner
           & "$scannerPath\bin\sonar-scanner.bat" `
               -D"sonar.projectKey=Terraform_Todo" `
               -D"sonar.projectName=Terraform_Todo" `
