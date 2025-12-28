@@ -6,10 +6,17 @@ resource "azurerm_network_interface" "nic_name" {
   location            = each.value.location
 
   ip_configuration {
-    name                          = "internal"
-    public_ip_address_id          = data.azurerm_public_ip.pip[each.key].id
+    name = "internal"
+    # public_ip_address_id          = data.azurerm_public_ip.pip[each.key].id
     subnet_id                     = data.azurerm_subnet.subnet[each.key].id
     private_ip_address_allocation = "Dynamic"
+
+    public_ip_address_id = (
+      each.value.pip_name != null ?
+      data.azurerm_public_ip.pip[each.key].id
+      :
+      null
+    )
   }
 }
 

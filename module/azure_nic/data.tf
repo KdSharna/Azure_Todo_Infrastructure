@@ -5,8 +5,13 @@ data "azurerm_subnet" "subnet" {
   resource_group_name  = each.value.rg_name
 }
 data "azurerm_public_ip" "pip" {
-  for_each = var.nic_name
+  for_each = {
+    for k, v in var.nic_name :
+    k => v
+    if v.pip_name != null
+  }
 
   name                = each.value.pip_name
   resource_group_name = each.value.rg_name
 }
+

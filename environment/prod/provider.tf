@@ -10,12 +10,12 @@ terraform {
     resource_group_name  = "pintu11"
     storage_account_name = "tattu102"
     container_name       = "con99"
-    key                  = "prod_orange.terraform_state"
+    key                  = "dev_orange.terraform_state"
   }
 }
 provider "azurerm" {
   features {
-        resource_group {
+    resource_group {
       prevent_deletion_if_contains_resources = false
     }
   }
