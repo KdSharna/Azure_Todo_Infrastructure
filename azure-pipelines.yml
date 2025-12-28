@@ -1,7 +1,6 @@
 
 trigger: none
 
-
 variables: 
   kds: '$(System.DefaultWorkingDirectory)/environment/${{ parameters.environment }}'
   sub: 'a0366c1d-7e23-4176-93a9-0e084725b2d4'
@@ -17,17 +16,23 @@ parameters:
   - prod
 
 stages: 
-- stage: TerraformInitStage
+- stage: Terraform_Infrastructure_Install
   displayName: Terraform Init - ${{ parameters.environment }}
   pool: My_pool
   jobs: 
-  - job: TerraformInit
 
+  - job: TerraformInstall
+    displayName: "Terraform Initialization & Planning"
     steps:
     - task: TerraformInstaller@1
-      displayName: Terraform Install
+      displayName: Terraform Installer
       inputs:
         terraformVersion: 'latest'
+
+  - job: Terraform_Init
+    displayName: Terraform Install & Init
+    dependsOn: TerraformInstall
+    steps:
 
     - task: TerraformTask@5
       displayName: Terraform Init
@@ -42,6 +47,12 @@ stages:
         backendAzureRmContainerName: 'con99'
         backendAzureRmKey: '${{ parameters.environment }}.terraform.tfstate'
 
+
+  - job: Terraform_Fmt
+    displayName: Terraform Format
+    dependsOn: Terraform_Init
+    steps:
+
     - task: TerraformTask@5
       displayName: Terraform Fmt
       inputs:
@@ -53,28 +64,38 @@ stages:
         environmentServiceNameAzureRM: 'service_ado'
         environmentAzureRmOverrideSubscriptionID: '$(sub)'
 
+  - job: Terraform_Validate
+    displayName: Terraform Validate
+    dependsOn: Terraform_Fmt
+    steps:
+
     - task: TerraformTask@5
-      displayName: Terraform Validate
+      displayName: Terraform Valid
       inputs:
         provider: 'azurerm'
         command: 'validate'
         workingDirectory: '$(kds)'
 
+  - job: Terraform_Plan
+    displayName: Terraform Plan
+    dependsOn: Terraform_Validate
+    steps:
+
     - task: TerraformTask@5
-      displayName: Terraform Plan
+      displayName: Terraform Planner
       inputs:
         provider: 'azurerm'
         command: 'plan'
         workingDirectory: '$(kds)'
         environmentServiceNameAzureRM: 'service_ado'
 
-- stage: TFLintStages
+- stage: Terraform_Lint
   displayName: TFLint Scan - ${{ parameters.environment }}
-  dependsOn:  TerraformInitStage
+  dependsOn:  Terraform_Infrastructure_Install
   pool: My_pool
   jobs: 
-  - job: TFLint
-
+  - job: TFLint_Scan
+    displayName: 
     steps:
     - task: PowerShell@2
       inputs:
@@ -84,22 +105,18 @@ stages:
           tflint --recursive
         workingDirectory: '$(kds)'
 
-- stage: TFSecStages
-  displayName: TFLint Scan - ${{ parameters.environment }}
-  dependsOn:  TFLintStages
-  pool: My_pool
-  jobs: 
-  - job: TFSec
-
+  - job: TFSec_Scan
+    dependsOn:  TFLint_Scan
+    displayName: TFSec Scan
     steps:
     - task: tfsec@1
       inputs:
         version: 'v1.26.0'
         dir: '$(kds)'
 
-- stage: InfracostStages
+- stage: Infrastructure_Cost_Estimation
   displayName: Infracost Scan - ${{ parameters.environment }}
-  dependsOn: TFSecStages
+  dependsOn: Terraform_Lint
   pool: My_pool
   jobs:
   - job: Infracost
@@ -111,11 +128,9 @@ stages:
         script: 'infracost breakdown --path=tfplan --format=table'
         workingDirectory: '$(kds)'
 
-
-
-- stage: ManualValidationStages
+- stage: Manual_Approval_Gate
   displayName: Manual Validation - ${{ parameters.environment }}
-  dependsOn: InfracostStages
+  dependsOn: Infrastructure_Cost_Estimation
   pool: server
   jobs: 
   - job: ManualValidation
@@ -127,21 +142,25 @@ stages:
         approvers: 'kapil@kapilsharmamgcgvvgmail.onmicrosoft.com'
         instructions: 'Approve'
 
-- stage: TerraformApplyStages
+- stage: Infrastructure_Deployment
   displayName: Terraform Install - ${{ parameters.environment }}
-  dependsOn: ManualValidationStages
+  dependsOn: Manual_Approval_Gate
   pool: My_pool
   jobs: 
-  - job: TerraformApply
-
+  - job: Terraform_Install_Apply
+    displayName: TerraformInitApply
     steps:
     - task: TerraformInstaller@1
       displayName: Terraform Install
       inputs:
         terraformVersion: 'latest'
 
+  - job: Terraform_Init_Apply
+    displayName: TerraformInitApply
+    dependsOn: Terraform_Install_Apply
+    steps:
     - task: TerraformTask@5
-      displayName: Terraform Init
+      displayName: Terraform_Init
       inputs:
         provider: 'azurerm'
         command: 'init'
@@ -153,7 +172,10 @@ stages:
         backendAzureRmContainerName: 'con99'
         backendAzureRmKey: 'orange.terraform_state'
 
-
+  - job: Terraform_Apply
+    displayName: TerraformApply
+    dependsOn: Terraform_Init_Apply
+    steps:
     - task: TerraformTask@5
       displayName: Terraform Apply
       inputs:
@@ -163,41 +185,15 @@ stages:
         environmentServiceNameAzureRM: 'service_ado'
         environmentAzureRmOverrideSubscriptionID: '$(sub)'
 
-    # - task: TerraformTask@5
-    #   displayName: Terraform Destroy
-    #   inputs:
-    #     provider: 'azurerm'
-    #     command: 'destroy'
-    #     workingDirectory: '$(kds)'
-    #     environmentServiceNameAzureRM: 'service_ado'
-    #     environmentAzureRmOverrideSubscriptionID: '$(sub)'
-
-# - stage: PythonInstallStages
-#   displayName: PythonInstall - ${{ parameters.environment }}
-#   dependsOn: TerraformApplyStages
-
-#   jobs: 
-#   - job: PythonInstall
-#     pool: My_pool
-#     steps:
-#     - task: UsePythonVersion@0
-#       inputs:
-#         versionSpec: '3.x'
-
-# - stage: CheckovStages
-#   displayName: Checkov - ${{ parameters.environment }}
-#   dependsOn: PythonInstallStages
-#   jobs: 
-#   - job: Checkov
-#     pool: My_pool
-#     steps:
-#     - task: PowerShell@2
-#       inputs:
-#         targetType: 'inline'
-#         script: |
-#           pip install checkov
-
-#           checkov `
-#             -d "$(kds)" `
-#             --framework terraform `
-#             --soft-fail-on HIGH
+  - job: Terraform_Destroy
+    displayName: TerraformDestroy
+    dependsOn: Terraform_Init_Apply
+    steps:
+    - task: TerraformTask@5
+      displayName: Terraform Destroy
+      inputs:
+        provider: 'azurerm'
+        command: 'destroy'
+        workingDirectory: '$(kds)'
+        environmentServiceNameAzureRM: 'service_ado'
+        environmentAzureRmOverrideSubscriptionID: '$(sub)'
