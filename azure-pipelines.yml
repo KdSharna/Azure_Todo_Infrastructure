@@ -162,7 +162,7 @@ stages:
 
 - stage: Infrastructure_Cost_Estimation
   displayName: Infracost Scan - ${{ parameters.environment }}
-  dependsOn: Terraform_Lint
+  dependsOn: SonarQube_Scan
   pool: My_pool
   jobs:
   - job: Infracost
