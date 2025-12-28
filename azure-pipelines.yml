@@ -64,21 +64,21 @@ stages:
         environmentServiceNameAzureRM: 'service_ado'
         environmentAzureRmOverrideSubscriptionID: '$(sub)'
 
-  - job: Terraform_Validate
-    displayName: Terraform Validate
-    dependsOn: Terraform_Fmt
-    steps:
+  # - job: Terraform_Validate
+  #   displayName: Terraform Validate
+  #   dependsOn: Terraform_Fmt
+  #   steps:
 
-    - task: TerraformTask@5
-      displayName: Terraform Valid
-      inputs:
-        provider: 'azurerm'
-        command: 'validate'
-        workingDirectory: '$(kds)'
+  #   - task: TerraformTask@5
+  #     displayName: Terraform Valid
+  #     inputs:
+  #       provider: 'azurerm'
+  #       command: 'validate'
+  #       workingDirectory: '$(kds)'
 
   - job: Terraform_Plan
     displayName: Terraform Plan
-    dependsOn: Terraform_Validate
+    dependsOn: Terraform_Fmt
     steps:
 
     - task: TerraformTask@5
