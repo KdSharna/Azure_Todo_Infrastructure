@@ -91,7 +91,7 @@ stages:
 
   - job: Terraform_Plan
     displayName: Terraform Plan
-    dependsOn: Terraform_Fmt
+    dependsOn: Terraform_Validate
     steps:
 
     - task: TerraformTask@5
