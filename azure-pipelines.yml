@@ -64,17 +64,17 @@ stages:
         environmentServiceNameAzureRM: 'service_ado'
         environmentAzureRmOverrideSubscriptionID: '$(sub)'
 
-  # - job: Terraform_Validate
-  #   displayName: Terraform Validate
-  #   dependsOn: Terraform_Fmt
-  #   steps:
+  - job: Terraform_Validate
+    displayName: Terraform Validate
+    dependsOn: Terraform_Fmt
+    steps:
 
-  #   - task: TerraformTask@5
-  #     displayName: Terraform Valid
-  #     inputs:
-  #       provider: 'azurerm'
-  #       command: 'validate'
-  #       workingDirectory: '$(kds)'
+    - task: TerraformTask@5
+      displayName: Terraform Valid
+      inputs:
+        provider: 'azurerm'
+        command: 'validate'
+        workingDirectory: '$(kds)'
 
   - job: Terraform_Plan
     displayName: Terraform Plan
@@ -126,6 +126,39 @@ stages:
       inputs:
         version: 'v1.26.0'
         dir: '$(kds)'
+
+- stage: SonarQube_Scan
+  displayName: "SonarQube Scan - ${{ parameters.environment }}"
+  dependsOn: Terraform_Lint
+  pool: My_pool
+  jobs:
+  - job: SonarQubeJob
+    displayName: "Run SonarQube Scan"
+    steps:
+    - task: PowerShell@2
+      inputs:
+        targetType: 'inline'
+        script: |
+          $scannerPath = "$(Build.ArtifactStagingDirectory)\sonar-scanner"
+          if (-not (Test-Path $scannerPath)) {
+            Invoke-WebRequest -Uri "https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.14.0.22179-windows.zip" -OutFile "$(Build.ArtifactStagingDirectory)\sonar-scanner.zip"
+            Expand-Archive -Path "$(Build.ArtifactStagingDirectory)\sonar-scanner.zip" -DestinationPath $scannerPath
+          }
+
+          $env:PATH += ";$scannerPath\bin"
+
+          & "$scannerPath\bin\sonar-scanner.bat" `
+            -D"sonar.projectKey=Terraform_Todo" `
+            -D"sonar.projectName=Terraform_Todo" `
+            -D"sonar.projectVersion=1.0" `
+            -D"sonar.sources=$(kds),$(kds)/../../module" `
+            -D"sonar.host.url=http://localhost:9000" `
+            -D"sonar.login=$(sqp_029457deaa787d774a20c02d930a1f9a71ba7531)" `
+            -D"sonar.exclusions=**/.terraform/**,**/*.tfstate,**/*.tfstate.backup" `
+            -D"sonar.sourceEncoding=UTF-8"
+        workingDirectory: '$(kds)'
+
+
 
 - stage: Infrastructure_Cost_Estimation
   displayName: Infracost Scan - ${{ parameters.environment }}
