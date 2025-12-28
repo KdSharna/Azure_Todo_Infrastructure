@@ -89,31 +89,31 @@ stages:
         command: 'validate'
         workingDirectory: '$(kds)'
 
-  # - job: Terraform_Plan
-  #   displayName: Terraform Plan
-  #   dependsOn: Terraform_Validate
-  #   steps:
+  - job: Terraform_Plan
+    displayName: Terraform Plan
+    dependsOn: Terraform_Validate
+    steps:
 
-  #   - task: TerraformTask@5
-  #     displayName: Terraform Init
-  #     inputs:
-  #       provider: 'azurerm'
-  #       command: 'init'
-  #       workingDirectory: '$(kds)'
-  #       backendServiceArm: 'service_ado'
-  #       backendAzureRmOverrideSubscriptionID: '$(sub)'
-  #       backendAzureRmResourceGroupName: 'pintu11'
-  #       backendAzureRmStorageAccountName: 'tattu102'
-  #       backendAzureRmContainerName: 'con99'
-  #       backendAzureRmKey: '${{ parameters.environment }}.terraform.tfstate'
+    - task: TerraformTask@5
+      displayName: Terraform Init
+      inputs:
+        provider: 'azurerm'
+        command: 'init'
+        workingDirectory: '$(kds)'
+        backendServiceArm: 'service_ado'
+        backendAzureRmOverrideSubscriptionID: '$(sub)'
+        backendAzureRmResourceGroupName: 'pintu11'
+        backendAzureRmStorageAccountName: 'tattu102'
+        backendAzureRmContainerName: 'con99'
+        backendAzureRmKey: '${{ parameters.environment }}.terraform.tfstate'
 
-  #   - task: TerraformTask@5
-  #     displayName: Terraform Planner
-  #     inputs:
-  #       provider: 'azurerm'
-  #       command: 'plan'
-  #       workingDirectory: '$(kds)'
-  #       environmentServiceNameAzureRM: 'service_ado'
+    - task: TerraformTask@5
+      displayName: Terraform Planner
+      inputs:
+        provider: 'azurerm'
+        command: 'plan'
+        workingDirectory: '$(kds)'
+        environmentServiceNameAzureRM: 'service_ado'
 
 - stage: Terraform_Lint
   displayName: TFLint Scan - ${{ parameters.environment }}
@@ -245,14 +245,14 @@ stages:
         backendAzureRmContainerName: 'con99'
         backendAzureRmKey: 'orange.terraform_state'
 
-    # - task: TerraformTask@5
-    #   displayName: Terraform Apply
-    #   inputs:
-    #     provider: 'azurerm'
-    #     command: 'apply'
-    #     workingDirectory: '$(kds)'
-    #     environmentServiceNameAzureRM: 'service_ado'
-    #     environmentAzureRmOverrideSubscriptionID: '$(sub)'
+    - task: TerraformTask@5
+      displayName: Terraform Apply
+      inputs:
+        provider: 'azurerm'
+        command: 'apply'
+        workingDirectory: '$(kds)'
+        environmentServiceNameAzureRM: 'service_ado'
+        environmentAzureRmOverrideSubscriptionID: '$(sub)'
 
   - job: Terraform_Destroy
     displayName: TerraformDestroy
