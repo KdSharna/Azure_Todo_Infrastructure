@@ -216,6 +216,20 @@ stages:
     displayName: TerraformDestroy
     dependsOn: Terraform_Apply
     steps:
+
+    - task: TerraformTask@5
+      displayName: Terraform_Init
+      inputs:
+        provider: 'azurerm'
+        command: 'init'
+        workingDirectory: '$(kds)'
+        backendServiceArm: 'service_ado'
+        backendAzureRmOverrideSubscriptionID: '$(sub)'
+        backendAzureRmResourceGroupName: 'pintu11'
+        backendAzureRmStorageAccountName: 'tattu102'
+        backendAzureRmContainerName: 'con99'
+        backendAzureRmKey: 'orange.terraform_state'
+        
     - task: TerraformTask@5
       displayName: Terraform Destroy
       inputs:
