@@ -214,7 +214,7 @@ stages:
 
   - job: Terraform_Destroy
     displayName: TerraformDestroy
-    dependsOn: Terraform_Init_Apply
+    dependsOn: Terraform_Apply
     steps:
     - task: TerraformTask@5
       displayName: Terraform Destroy
