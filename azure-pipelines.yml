@@ -148,7 +148,7 @@ stages:
   pool: My_pool
   jobs: 
   - job: Terraform_Install_Apply
-    displayName: TerraformInitApply
+    displayName: TerraformInstallApply
     steps:
     - task: TerraformInstaller@1
       displayName: Terraform Install
