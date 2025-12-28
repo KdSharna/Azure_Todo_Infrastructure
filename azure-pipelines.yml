@@ -185,15 +185,15 @@ stages:
         environmentServiceNameAzureRM: 'service_ado'
         environmentAzureRmOverrideSubscriptionID: '$(sub)'
 
-  - job: Terraform_Destroy
-    displayName: TerraformDestroy
-    dependsOn: Terraform_Init_Apply
-    steps:
-    - task: TerraformTask@5
-      displayName: Terraform Destroy
-      inputs:
-        provider: 'azurerm'
-        command: 'destroy'
-        workingDirectory: '$(kds)'
-        environmentServiceNameAzureRM: 'service_ado'
-        environmentAzureRmOverrideSubscriptionID: '$(sub)'
+  # - job: Terraform_Destroy
+  #   displayName: TerraformDestroy
+  #   dependsOn: Terraform_Init_Apply
+  #   steps:
+  #   - task: TerraformTask@5
+  #     displayName: Terraform Destroy
+  #     inputs:
+  #       provider: 'azurerm'
+  #       command: 'destroy'
+  #       workingDirectory: '$(kds)'
+  #       environmentServiceNameAzureRM: 'service_ado'
+  #       environmentAzureRmOverrideSubscriptionID: '$(sub)'
