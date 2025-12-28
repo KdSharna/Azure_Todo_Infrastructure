@@ -1,16 +1,9 @@
-# variable "firewall_pip" {
+# variable "lb_firewall" {
 #   type = map(object({
 #     name     = string
 #     location = string
 #     rg_name  = string
 #     sku_name = string
 #     sku_tier = string
-
-#     ip_configuration = map(object({
-#       name      = string
-#       subnet_id = optional(string)
-
-#     }))
-#     tags = optional(map(string))
 #   }))
 # }

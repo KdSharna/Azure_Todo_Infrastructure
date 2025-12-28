@@ -7,7 +7,7 @@ variable "linux_vm" {
     size          = string
     nic           = string
     kv_name       = string
-    script_name   = string
+    script_name   = optional(string)
     source_image_reference = map(object({
       publisher = string
       version   = string
