@@ -9,7 +9,7 @@ parameters:
 - name: environment
   displayName: Environment
   type: string
-  default: dev
+  default: dev 
   values:
   - dev
   - qa
@@ -196,6 +196,7 @@ stages:
         notifyUsers: 'kapil@kapilsharmamgcgvvgmail.onmicrosoft.com'
         approvers: 'kapil@kapilsharmamgcgvvgmail.onmicrosoft.com'
         instructions: 'Approve'
+
 
 - stage: Infrastructure_Deployment
   displayName: Terraform Install - ${{ parameters.environment }}
