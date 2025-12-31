@@ -15,6 +15,16 @@ parameters:
   - qa
   - prod
 
+- name: securityScan
+  displayName: "Select Terraform Security Scan"
+  type: string
+  default: both
+  values:
+  - tflint
+  - tfsec
+  - both
+  - none
+
 stages: 
 - stage: Terraform_Infrastructure_Install
   displayName: Terraform Init - ${{ parameters.environment }}
