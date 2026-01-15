@@ -18,6 +18,11 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Azure Login (REQUIRED for backend)
+      uses: azure/login@v2
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
     - uses: hashicorp/setup-terraform@v3
       with:
         terraform_version: 1.6.6
