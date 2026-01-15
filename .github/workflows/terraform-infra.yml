@@ -3,12 +3,7 @@ name: Terraform Azure Infra
 on:
   push:
     branches:
-      - none
-  pull_request:
-  
-# permissions: 
-#   id-token: write
-#   contents: read
+      - main
 
 jobs:
   terraform:
@@ -21,32 +16,17 @@ jobs:
       TF_VAR_client_secret:   ${{ fromJson(secrets.AZURE_CREDENTIALS).clientSecret }}
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-    - name: Azure Login
-      uses: azure/login@v2
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v3
+    - uses: hashicorp/setup-terraform@v3
       with:
         terraform_version: 1.6.6
 
-    - name: Terraform Init
-      run: terraform init
+    - run: terraform init
       working-directory: environment/dev
 
-    - name: Terraform Validate
-      run: terraform validate
+    - run: terraform plan
       working-directory: environment/dev
 
-    - name: Terraform Plan
-      run: terraform plan
-      working-directory: environment/dev
-
-    - name: Terraform Apply
-      if: github.ref == 'refs/heads/main'
-      run: terraform apply -auto-approve
+    - run: terraform apply -auto-approve
       working-directory: environment/dev
