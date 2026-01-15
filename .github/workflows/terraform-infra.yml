@@ -5,12 +5,23 @@ on:
     branches:
       - main
 
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "Choose action: apply or destroy"
+        required: true
+        default: apply
+        type: choice
+        options:
+          - apply
+          - destroy
+
 jobs:
   terraform:
     runs-on: ubuntu-latest
 
     env:
-      # 🔑 BACKEND AUTH (VERY IMPORTANT)
+      # 🔑 BACKEND AUTH
       ARM_SUBSCRIPTION_ID: ${{ fromJson(secrets.AZURE_CREDENTIALS).subscriptionId }}
       ARM_TENANT_ID:       ${{ fromJson(secrets.AZURE_CREDENTIALS).tenantId }}
       ARM_CLIENT_ID:       ${{ fromJson(secrets.AZURE_CREDENTIALS).clientId }}
@@ -25,18 +36,25 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    # ❌ Azure/login COMPLETELY REMOVE
-    # backend ko CLI ki zarurat hi nahi
-
     - uses: hashicorp/setup-terraform@v3
       with:
         terraform_version: 1.6.6
 
-    - run: terraform init
+    - name: Terraform Init
+      run: terraform init
       working-directory: environment/dev
 
-    - run: terraform plan
+    - name: Terraform Plan
+      if: github.event.inputs.action != 'destroy'
+      run: terraform plan
       working-directory: environment/dev
 
-    - run: terraform apply -auto-approve
+    - name: Terraform Apply
+      if: github.event.inputs.action != 'destroy'
+      run: terraform apply -auto-approve
+      working-directory: environment/dev
+
+    - name: Terraform Destroy
+      if: github.event.inputs.action == 'destroy'
+      run: terraform destroy -auto-approve
       working-directory: environment/dev
