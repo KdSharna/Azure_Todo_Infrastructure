@@ -163,7 +163,7 @@ vm_linux = {
 
 serversql = {
   server1 = {
-    name                         = "mysqlservertittu123"
+    name                         = "mysqlservertittu1234"
     resource_group_name          = "tittu11"
     location                     = "west us 2"
     version                      = "12.0"
@@ -176,8 +176,8 @@ serversql = {
 
 databasesql = {
   database1 = {
-    name         = "mysqldatabase"
-    sql_name     = "mysqlservertittu123"
+    name         = "mysqldatabase1"
+    sql_name     = "mysqlservertittu1234"
     collation    = "SQL_Latin1_General_CP1_CI_AS"
     license_type = "LicenseIncluded"
     max_size_gb  = 2
