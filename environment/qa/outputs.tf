@@ -1,7 +1,8 @@
 
-# output "resource_groups_info" {
-#   value = module.name_rg.rg_name
-# }
+output "resource_groups_info" {
+  value = module.name_rg.rg_names
+}
+
 
 # output "virtual_networks_info" {
 #   value = module.nw_virtual.virtual_networks
