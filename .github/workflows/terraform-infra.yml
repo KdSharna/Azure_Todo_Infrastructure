@@ -3,8 +3,12 @@ name: Terraform Azure Infra
 on:
   push:
     branches:
-      - main
+      - none
   pull_request:
+  
+# permissions: 
+#   id-token: write
+#   contents: read
 
 jobs:
   terraform:
