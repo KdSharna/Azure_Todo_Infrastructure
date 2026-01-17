@@ -8,7 +8,7 @@ terraform {
   }
   backend "azurerm" {
     resource_group_name  = "pintu11"
-    storage_account_name = "tattu101"
+    storage_account_name = "tattu100"
     container_name       = "con99"
     key                  = "dev_orange.terraform_state"
   }
@@ -19,9 +19,8 @@ provider "azurerm" {
       prevent_deletion_if_contains_resources = false
     }
   }
-  #subscription_id = "7e450572-1056-4117-9e7b-97e717138408"
-  subscription_id = var.subscription_id
-  tenant_id       = var.tenant_id
-  client_id       = var.client_id
-  client_secret   = var.client_secret
+  subscription_id = "9e5164c3-5dce-42e1-abfe-6be582de11d8"
+#   tenant_id       = var.tenant_id
+#   client_id       = var.client_id
+#   client_secret   = var.client_secret
 }
