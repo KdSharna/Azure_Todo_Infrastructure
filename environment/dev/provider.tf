@@ -8,7 +8,7 @@ terraform {
   }
   backend "azurerm" {
     resource_group_name  = "pintu11"
-    storage_account_name = "tattu101"
+    storage_account_name = "tattu100"
     container_name       = "con99"
     key                  = "dev_orange.terraform_state"
   }
