@@ -182,3 +182,11 @@ variable "pool_nat" {
 #     sku_tier = string
 #   }))
 # }
+
+
+# variable "subscription_id" {}
+# variable "tenant_id" {}
+# variable "client_id" {}
+# variable "client_secret" {
+#   sensitive = true
+# }
