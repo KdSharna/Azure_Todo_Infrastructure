@@ -328,4 +328,4 @@ pool_nat = {
 #     sku_name = "AZFW_VNet"
 #     sku_tier = "Standard"
 #   }
-# }
+#}
