@@ -20,7 +20,7 @@ provider "azurerm" {
     }
   }
   subscription_id = "9e5164c3-5dce-42e1-abfe-6be582de11d8"
-#   tenant_id       = var.tenant_id
-#   client_id       = var.client_id
-#   client_secret   = var.client_secret
+   tenant_id       = var.tenant_id
+   client_id       = var.client_id
+   client_secret   = var.client_secret
 }
