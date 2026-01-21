@@ -11,16 +11,16 @@ jobs:
 
     env:
       # 🔑 BACKEND AUTH (VERY IMPORTANT)
-      ARM_SUBSCRIPTION_ID: ${{ fromJson(secrets.AZURE_CREDENTIALS1).subscriptionId }}
-      ARM_TENANT_ID:       ${{ fromJson(secrets.AZURE_CREDENTIALS1).tenantId }}
-      ARM_CLIENT_ID:       ${{ fromJson(secrets.AZURE_CREDENTIALS1).clientId }}
-      ARM_CLIENT_SECRET:   ${{ fromJson(secrets.AZURE_CREDENTIALS1).clientSecret }}
+      ARM_SUBSCRIPTION_ID: ${{ fromJson(secrets.AZURE_CREDENTIALS01).subscriptionId }}
+      ARM_TENANT_ID:       ${{ fromJson(secrets.AZURE_CREDENTIALS01).tenantId }}
+      ARM_CLIENT_ID:       ${{ fromJson(secrets.AZURE_CREDENTIALS01).clientId }}
+      ARM_CLIENT_SECRET:   ${{ fromJson(secrets.AZURE_CREDENTIALS01).clientSecret }}
 
       # 🔑 PROVIDER AUTH
-      TF_VAR_subscription_id: ${{ fromJson(secrets.AZURE_CREDENTIALS1).subscriptionId }}
-      TF_VAR_tenant_id:       ${{ fromJson(secrets.AZURE_CREDENTIALS1).tenantId }}
-      TF_VAR_client_id:       ${{ fromJson(secrets.AZURE_CREDENTIALS1).clientId }}
-      TF_VAR_client_secret:   ${{ fromJson(secrets.AZURE_CREDENTIALS1).clientSecret }}
+      TF_VAR_subscription_id: ${{ fromJson(secrets.AZURE_CREDENTIALS01).subscriptionId }}
+      TF_VAR_tenant_id:       ${{ fromJson(secrets.AZURE_CREDENTIALS01).tenantId }}
+      TF_VAR_client_id:       ${{ fromJson(secrets.AZURE_CREDENTIALS01).clientId }}
+      TF_VAR_client_secret:   ${{ fromJson(secrets.AZURE_CREDENTIALS01).clientSecret }}
 
     steps:
     - uses: actions/checkout@v4
